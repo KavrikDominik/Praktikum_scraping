@@ -1,0 +1,73 @@
+---
+title: "Analýza cen vozů Škoda"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+# Vizualizace
+
+
+## Column {data-width=550}
+
+
+### Nase data
+
+```{r}
+knitr::kable(head(data, 100))
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Histogram
+
+```{r}
+histogramy
+```
+
+### Sloupcovy graf
+
+```{r}
+sloupce
+```
+
+
+# Model
+
+$$ cena = \beta_0 + ns(\text{tachometer}) + ns(\text{age}) + ns(\text{objem}) + \text{seo_name} + u, \qquad u\sim \mathcal{N}(0,\sigma^2) $$
+
+
+## Summary {data-width=450}
+
+<b> Výstup modelu: </b>
+```{r}
+summary(gam1)
+```
+
+## Mezni efekty {data-width=550 .tabset}
+
+### Tachometr
+
+```{r}
+tachometer
+```
+
+### Age
+
+```{r}
+age
+```
+
+
+### Objem
+
+```{r}
+objem
+```
+
