@@ -48,6 +48,5 @@ download_jpeg(url = "http://d19-a.sdn.cz/d_19/c_img_QQ_Eh/toeTWQ.jpeg?fl=exf|crr
               folder = "folder",
               name = "name")
 
-
 download.file("http://d19-a.sdn.cz/d_19/c_img_QO_Eo/RIeTci.jpeg?fl=exf|crr,1.33333,0|res,1024,768,1|wrm,/watermark/sauto.png,10,10|jpg,80,,1",
               destfile = "photo.jpeg", mode = 'wb')
