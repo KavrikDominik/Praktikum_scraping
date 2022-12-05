@@ -47,10 +47,13 @@ for (model in model_vec){
     bind_rows(temp_output)
   
 }
-
-data <- output %>% 
+# data <- 
+  output %>% 
   select(name, model_cb, fuel_cb, gearbox_cb, additional_model_name,
-         tachometer, price, premise, locality, in_operation_date) %>% 
+         tachometer, price, premise, locality, in_operation_date, images) %>% 
+  mutate(img_url=map(images, .f = ~lapply(.x, '[[', 1))) %>% 
+  mutate(img_url=map(img_url, .f = ~unlist(.x))) %>% unnest(img_url) %>%
+  mutate(img_url = paste0("http:",img_url, suffix)) %>% 
   mutate(additional_model_name = tolower(additional_model_name)) %>% 
   mutate(kombi = ifelse(str_detect(.$additional_model_name, "kombi|combi"),1,0)) %>%
   mutate(additional_model_name = str_replace(additional_model_name, "(?<=\\d)\\,+(?=\\d)", "\\.")) %>% 
@@ -59,10 +62,39 @@ data <- output %>%
   mutate(now = Sys.Date()) %>% 
   mutate(age = time_length(
     difftime(as.Date(now), in_operation_date),"years") ) %>% 
-  select(price, objem, age, tachometer, fuel_cb, gearbox_cb, kombi) %>% 
+  select(price,model_cb, objem, age, tachometer, fuel_cb, gearbox_cb, kombi, locality,img_url) %>% 
   unnest() %>% 
-  select(-c(value, name1, seo_name1, value1, name)) %>% 
+  mutate(across(.cols = everything(), ~ifelse(.=="", NA, .))) %>%
+  select(-c(value, name1, seo_name1, value1, name, housenumber, municipality,  
+            municipality_id, entity_type,source, street, street_id, streetnumber,
+            quarter, quarter_id, municipality_seo_name, ward_id, ward, citypart,
+            country_id,address ,address_id, zip, region, region_id, region_seo_name,name2, seo_name2)) %>% 
   mutate(objem = as.numeric(objem)) %>% 
-  na.omit()
+  na.omit() %>% 
+  mutate(index = row_number())
 
-# write.csv(data, "data_skoda.csv", row.names = FALSE)
+model_names <- output %>% 
+  select(name, model_cb, fuel_cb, gearbox_cb, additional_model_name,
+         tachometer, price, premise, locality, in_operation_date, images) %>% 
+  mutate(img_url=map(images, .f = ~lapply(.x, '[[', 1))) %>% 
+  mutate(img_url=map(img_url, .f = ~unlist(.x))) %>% unnest(img_url) %>%
+  mutate(img_url = paste0("http:",img_url, suffix)) %>% 
+  mutate(additional_model_name = tolower(additional_model_name)) %>% 
+  mutate(kombi = ifelse(str_detect(.$additional_model_name, "kombi|combi"),1,0)) %>%
+  mutate(additional_model_name = str_replace(additional_model_name, "(?<=\\d)\\,+(?=\\d)", "\\.")) %>% 
+  mutate(objem = str_extract(additional_model_name, "[1-3]\\.\\d{1,1}")) %>%
+  mutate(in_operation_date = as.Date(in_operation_date)) %>% 
+  mutate(now = Sys.Date()) %>% 
+  mutate(age = time_length(
+    difftime(as.Date(now), in_operation_date),"years") ) %>% 
+  select(model_cb, img_url) %>% unnest() %>% rename(model = seo_name) %>%  select(model, img_url) %>%  na.omit()
+
+
+data <- data %>% 
+  left_join(model_names, by = "img_url") %>% 
+  select(model, 1:12)
+
+
+
+write.csv(data, "data_skoda.csv", row.names = FALSE)
+ 
