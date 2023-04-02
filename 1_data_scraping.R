@@ -15,7 +15,7 @@ for (model in model_vec){
   
   query <- list()
   
-  model_input <- paste0("93:", model)
+  model_input <- paste0("93:", model) 
   
   query <- list(manufacturer_model_cb = model_input)
 
@@ -26,25 +26,58 @@ for (model in model_vec){
   
   max_items <- data$pagination$total
   
-  query$limit <- max_items
+  query$limit <- 20
   
-  resp <- GET("https://www.sauto.cz/api/v1/items/search?", query = query)
-  data <- fromJSON(resp$request$url)
+  remainder <- max_items%%query$limit
   
+  offsets <- seq(0, to=max_items-remainder, by=20)
+  # object <- tibble()
+  
+  # scraping each model by 20 ads
+  for (o in offsets){
+    temp <- tibble()
+    query$offset <- o 
+
+    resp <- GET("https://www.sauto.cz/api/v1/items/search?", query = query)
+    data <- fromJSON(resp$request$url)
+    # serialize data into tibble object
+    temp <-  tibble(
+      manufacturer = data$results$manufacturer_cb$seo_name,
+      manufacturer_id = data$results$manufacturer_cb$value,
+      model = data$results$model_cb$seo_name,
+      model_id = data$results$model_cb$value,
+      name = data$results$category$seo_name,
+      price = data$results$price,
+      miliage = data$results$tachomete,
+      price_by_agreement = data$results$price_by_agreement,
+      topped = data$results$topped,
+      premise = data$results$premise$name,
+      id = data$results$id,
+      additional = data$results$additional_model_name,
+      fuel = data$results$fuel_cb$s,
+      fuel_id = data$results$fuel_cb$value,
+      gearbox = data$results$gearbox_cb$seo_name,
+      gearbox_id = data$results$gearbox_cb$value,
+      create_date = data$results$create_date,
+      custom_id = data$results$custom_id,
+      in_operation_date = data$results$in_operation_date,
+      manufacturing_date = data$results$manufacturing_date,
+      deal_type = data$results$deal_type
+    )
+    
+    temp_output <- bind_rows(
+      temp_output, temp
+    )
+  }
+  # temp_output <- object
   print(max_items)
-  
-  
-  temp_output <- data$results %>%
-    tibble()
-  
-  
-  print(paste("temporary output:", "length", nrow(temp_output), "max_items:", max_items))
-  
-  
-  Sys.sleep(0.25)
   
   output <- output %>% 
     bind_rows(temp_output)
+  
+  print(paste("temporary output:", "length", nrow(temp_output), "max_items:", max_items))
+  
+  Sys.sleep(0.25)
   
 }
 # data <- 
