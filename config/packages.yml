@@ -1,0 +1,16 @@
+- readr
+- dplyr
+- tidyr
+- stringr
+- tibble
+- broom
+- ggplot2
+- tibble
+- rmarkdown
+- knitr
+- kableExtra
+- tidyr
+- purrr
+- flexdashboard
+- forcats
+- gam

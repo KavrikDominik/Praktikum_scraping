@@ -1,4 +1,6 @@
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 library(jsonlite)
 library(httr)
 library(lubridate)
