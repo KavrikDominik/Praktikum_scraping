@@ -47,7 +47,7 @@ for (model in model_vec){
 }
 
 
-# data <- 
+data <- 
   output %>%
   mutate(additional_model_name = tolower(additional_model_name)) %>% 
   mutate(kombi = ifelse(str_detect(.$additional_model_name, "kombi|combi"),1,0)) %>%
@@ -59,10 +59,6 @@ for (model in model_vec){
     difftime(as.Date(now), in_operation_date),"years") ) %>%
   mutate(across(.cols = everything(), ~ifelse(.=="" & !is.Date(.), NA, .))) %>%
   mutate(objem = as.numeric(objem)) %>% 
-  summarise(across(everything(), ~sum(is.na(.)))) %>%
-  pivot_longer(values_to = "values",
-               names_to = "names", 1:ncol(.)) %>% 
-    filter(values > 0)
   na.omit() %>% 
   mutate(index = row_number())
 

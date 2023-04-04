@@ -40,7 +40,7 @@ sloupce
 
 # Model
 
-$$ cena = \beta_0 + ns(\text{tachometer}) + ns(\text{age}) + ns(\text{objem}) + \text{seo_name} + u, \qquad u\sim \mathcal{N}(0,\sigma^2) $$
+$$ cena = \beta_0 + ns(\text{miliage}) + ns(\text{age}) + ns(\text{objem}) + \text{model} + u, \qquad u\sim \mathcal{N}(0,\sigma^2) $$
 
 
 ## Summary {data-width=450}
@@ -55,7 +55,7 @@ summary(gam1)
 ### Tachometr
 
 ```{r}
-tachometer
+miliage
 ```
 
 ### Age

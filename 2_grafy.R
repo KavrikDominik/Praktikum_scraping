@@ -1,9 +1,9 @@
 
 histogramy <- data %>%
-  select(-c(seo_name, kombi)) %>%
+  select(c(model, price)) %>%
   pivot_longer(
     names_to = "variable",
-    values_to = "values", 1:ncol(.)
+    values_to = "values", 2:ncol(.)
   ) %>%
   ggplot(aes(x = values)) +
   geom_histogram(aes(y = ..density..), 
@@ -13,13 +13,17 @@ histogramy <- data %>%
   facet_wrap(~variable, scales = "free") +
   theme_light()
 
+histogramy
 
 sloupce <- data %>%
-  select(seo_name) %>%
-  mutate(seo_name = factor(seo_name, levels = c(
+  select(model, fuel) %>%
+  mutate(fuel = factor(fuel, levels = c(
     "benzin", "nafta", "cng-benzin",
     "hybridni", "lpg-benzin", "elektro"
   ))) %>%
-  ggplot(aes(seo_name)) +
+  ggplot(aes(fuel, fill = fuel)) +
   geom_bar(fill = "#1e81b0") +
-  theme_light()
+  theme_light()+
+  facet_wrap(~model, scales = "free")
+
+sloupce

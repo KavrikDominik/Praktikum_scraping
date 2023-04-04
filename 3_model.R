@@ -8,7 +8,7 @@ set.seed(2222)
 
 
 
-data <- read_csv("data_skoda.csv")
+# data <- read_csv("data_skoda.csv")
 
 # Test/train split --------------------------------------------------------
 
@@ -26,8 +26,8 @@ new_x_df <- tibble(test[, -1])
 
 
 gam1 <- gam(
-  price ~ ns(tachometer, df = 5) + ns(age, df = 5) +
-    seo_name + ns(objem, df = 5),
+  price ~ ns(miliage, df = 5) + ns(age, df = 5) +
+    model + ns(objem, df = 5),
   data = train
 )
 
@@ -39,10 +39,10 @@ summary(gam1)
 
 DF <- preplot(gam1, se=T)
 
-tachometer <- tibble(
-  x = DF$`ns(tachometer, df = 5)`$x,
-  y = DF$`ns(tachometer, df = 5)`$y,
-  se.y = DF$`ns(tachometer, df = 5)`$se.y
+miliage <- tibble(
+  x = DF$`ns(miliage, df = 5)`$x,
+  y = DF$`ns(miliage, df = 5)`$y,
+  se.y = DF$`ns(miliage, df = 5)`$se.y
 ) %>% 
   # pivot_longer(names_to = "variable",
   #              values_to = "value", 1:3) %>% 
