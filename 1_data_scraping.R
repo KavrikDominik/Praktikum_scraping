@@ -7,6 +7,7 @@ library(lubridate)
 
 source("common.R")
 
+manufacturer = "93"
 model_vec <- c("707","702","1703","708","8155","1286","705",
                "6445","6125","8744","704","703","8290","7665",
                "7595","699","700","706")
@@ -15,9 +16,8 @@ model_vec <- c("707","702","1703","708","8155","1286","705",
 output <- tibble()
 for (model in model_vec){
   temp_output <- tibble()
-  query <- makeQuery(manufacturer = "93",
-            model,
-            limit = 20)
+  query <- makeQuery(manufacturer,
+            model)
   resp <- GET("https://www.sauto.cz/api/v1/items/search?", query = query)
   data <- fromJSON(resp$request$url)
   max_items <- data$pagination$total
@@ -27,9 +27,8 @@ for (model in model_vec){
   # scraping each model by 20 ads
   for (o in offsets){
     temp <- tibble()
-    query <- makeQuery(manufacturer = "93",
+    query <- makeQuery(manufacturer,
               model = model,
-              limit = 20,
               offset = o)
     resp <- GET("https://www.sauto.cz/api/v1/items/search?", query = query)
     data <- fromJSON(resp$request$url)

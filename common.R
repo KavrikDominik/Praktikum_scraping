@@ -1,6 +1,6 @@
 makeQuery <- function(manufacturer = character(),
                       model = character(),
-                      limit = numeric(),
+                      limit = 20,
                       offset=0){
   query <- list()
   model_input <- paste0(manufacturer,":", model)
